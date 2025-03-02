@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,10 +23,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.maeschdev.drohnenapp.ui.theme.DrohnenAppTheme
+import java.util.concurrent.CancellationException
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,139 +62,59 @@ fun ControlPage(modifier: Modifier = Modifier) {
                     .fillMaxHeight(0.75f)
             ) {
                 Row(modifier = Modifier.weight(1f)) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(1f)
-                            .clickable {
-                                sendData("Up", "192.168.178.145", 5000)
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_arrow_upward),
-                            contentDescription = "Up",
-                            modifier = Modifier
-                                .size(75.dp)
-                                .background(MaterialTheme.colorScheme.primaryContainer),
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
+                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(1f), "UP", painterResource(R.drawable.ic_arrow_upward))
                     Spacer(modifier = Modifier.weight(0.25f))
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(1f),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_keyboard_arrow_up),
-                            contentDescription = "Forward",
-                            modifier = Modifier
-                                .size(75.dp)
-                                .background(MaterialTheme.colorScheme.primaryContainer),
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
+                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(1f), "FORWARD", painterResource(R.drawable.ic_keyboard_arrow_up))
                 }
                 Row(modifier = Modifier.weight(1f)) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(0.5f),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_rotate_left),
-                            contentDescription = "Rotate Left",
-                            modifier = Modifier
-                                .size(75.dp)
-                                .background(MaterialTheme.colorScheme.primaryContainer),
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(0.5f),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_rotate_right),
-                            contentDescription = "Rotate Right",
-                            modifier = Modifier
-                                .size(75.dp)
-                                .background(MaterialTheme.colorScheme.primaryContainer),
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
+                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(0.5f), "ROTATE_LEFT", painterResource(R.drawable.ic_rotate_left))
+                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(0.5f), "ROTATE_RIGHT", painterResource(R.drawable.ic_rotate_right))
                     Spacer(modifier = Modifier.weight(0.25f))
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(0.5f),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_keyboard_arrow_left),
-                            contentDescription = "Left",
-                            modifier = Modifier
-                                .size(75.dp)
-                                .background(MaterialTheme.colorScheme.primaryContainer),
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(0.5f),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_keyboard_arrow_right),
-                            contentDescription = "Right",
-                            modifier = Modifier
-                                .size(75.dp)
-                                .background(MaterialTheme.colorScheme.primaryContainer),
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
+                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(0.5f), "LEFT", painterResource(R.drawable.ic_keyboard_arrow_left))
+                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(0.5f), "RIGHT", painterResource(R.drawable.ic_keyboard_arrow_right))
                 }
                 Row(modifier = Modifier.weight(1f)) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(1f),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_arrow_downward),
-                            contentDescription = "Down",
-                            modifier = Modifier
-                                .size(75.dp)
-                                .background(MaterialTheme.colorScheme.primaryContainer),
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
+                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(1f), "DOWN", painterResource(R.drawable.ic_arrow_downward))
                     Spacer(modifier = Modifier.weight(0.25f))
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(1f),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_keyboard_arrow_down),
-                            contentDescription = "Backward",
-                            modifier = Modifier
-                                .size(75.dp)
-                                .background(MaterialTheme.colorScheme.primaryContainer),
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
+                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(1f), "BACK", painterResource(R.drawable.ic_keyboard_arrow_down))
                 }
             }
         }
+    }
+}
+
+@Composable
+fun SendDataButton(modifier: Modifier = Modifier, message: String, painter: Painter){
+    Box(
+        modifier = modifier
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onPress = {
+                        onButtonPressed(message)
+                        val released = try {
+                            tryAwaitRelease()
+                        } catch (c: CancellationException){
+                            false
+                        }
+                        if (released){
+                            onButtonReleased()
+                        }
+                        else{
+                            onButtonReleased()
+                        }
+                    }
+                )
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            painter = painter,
+            contentDescription = message,
+            modifier = Modifier
+                .size(75.dp)
+                .background(MaterialTheme.colorScheme.primaryContainer),
+            tint = MaterialTheme.colorScheme.onPrimaryContainer
+        )
     }
 }
 
