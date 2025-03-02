@@ -12,6 +12,9 @@ import java.net.InetAddress
 var isRunning = true
 var lastMessage = "STOP"
 
+const val ip_address = "192.168.178.145"
+const val port = 5000
+
 fun startSendingCommands(){
     GlobalScope.launch {
         while (isRunning){
@@ -35,6 +38,7 @@ fun onButtonReleased(){
 
 fun sendCommand(message: String){
     println("Send: $message")
+    sendData(message, ip_address, port)
 }
 
 fun sendData(message: String, ip: String, port: Int){
