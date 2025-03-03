@@ -40,6 +40,30 @@ Wenn auf Button *9* gedrückt wird, öffnet sich das Einstellungsmenü:
 
 In den Input Fields können nun IP Adresse und Port eingestellt werden. Wenn nun auf dem Startbildschirm ein Button gedrückt wird, werden die Pakete an diese IP Adresse und Port gesendet. Auch nach vollständigem schließen werden diese Daten beibehalten.
 
+## Lokal testen
+
+- Lade dir die neuste Version der App für Android als .apk von [hier](https://github.com/MaeschDEV/Drohnen-App/releases) herunter
+- Zum Testen kannst du auf deinem lokalen PC ein Socket abhören auf dem von dir in der App definierten Port. Du kannst dafür [dieses Python Programm](#python-testprogramm) verwenden
+- Gebe die IPV4 Adresse deines Computers in der App ein
+- Wenn du nun das Python Programm startest und einen Button in der App drückst, solltest du "Received message: (...)" in dem Output sehen. Wenn ja, hat alles geklappt
+
+## Python Testprogramm
+```
+import socket
+
+UDP_IP = "0.0.0.0"
+UDP_PORT = 5000
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.bind((UDP_IP, UDP_PORT))
+
+print(f"Listening on port {UDP_PORT}...")
+
+while True:
+    data, addr = sock.recvfrom(1024)
+    print(f"Received message: {data.decode()} from {addr}")
+```
+
 ## Authors
 
 - [@MaeschDEV](https://github.com/MaeschDEV)
