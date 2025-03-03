@@ -12,8 +12,8 @@ var isRunning = true
 var messageArray: Array<Int> = arrayOf(0, 0, 0, 0)
 var sendEmptyMessage = false
 
-var IP_ADDRESS = "192.168.178.145"
-var PORT = "5000"
+var IP_ADDRESS = "0"
+var PORT = "0"
 
 fun startSendingCommands(){
     CoroutineScope(Dispatchers.IO).launch {
