@@ -42,6 +42,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        startSendingCommands()
     }
 }
 
@@ -62,21 +63,21 @@ fun ControlPage(modifier: Modifier = Modifier) {
                     .fillMaxHeight(0.75f)
             ) {
                 Row(modifier = Modifier.weight(1f)) {
-                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(1f), "UP", painterResource(R.drawable.ic_arrow_upward))
+                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(1f), 0, 1, painterResource(R.drawable.ic_arrow_upward), "Up")
                     Spacer(modifier = Modifier.weight(0.25f))
-                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(1f), "FORWARD", painterResource(R.drawable.ic_keyboard_arrow_up))
+                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(1f), 2, 1, painterResource(R.drawable.ic_keyboard_arrow_up), "Forward")
                 }
                 Row(modifier = Modifier.weight(1f)) {
-                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(0.5f), "ROTATE_LEFT", painterResource(R.drawable.ic_rotate_left))
-                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(0.5f), "ROTATE_RIGHT", painterResource(R.drawable.ic_rotate_right))
+                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(0.5f), 1, 1, painterResource(R.drawable.ic_rotate_left), "Rotate Left")
+                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(0.5f), 1, -1, painterResource(R.drawable.ic_rotate_right), "Rotate Right")
                     Spacer(modifier = Modifier.weight(0.25f))
-                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(0.5f), "LEFT", painterResource(R.drawable.ic_keyboard_arrow_left))
-                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(0.5f), "RIGHT", painterResource(R.drawable.ic_keyboard_arrow_right))
+                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(0.5f), 3, 1, painterResource(R.drawable.ic_keyboard_arrow_left), "Left")
+                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(0.5f), 3, -1, painterResource(R.drawable.ic_keyboard_arrow_right), "Right")
                 }
                 Row(modifier = Modifier.weight(1f)) {
-                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(1f), "DOWN", painterResource(R.drawable.ic_arrow_downward))
+                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(1f), 0, -1, painterResource(R.drawable.ic_arrow_downward), "Down")
                     Spacer(modifier = Modifier.weight(0.25f))
-                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(1f), "BACK", painterResource(R.drawable.ic_keyboard_arrow_down))
+                    SendDataButton(modifier = Modifier.fillMaxHeight().weight(1f), 2, -1, painterResource(R.drawable.ic_keyboard_arrow_down), "Backward")
                 }
             }
         }
@@ -84,23 +85,23 @@ fun ControlPage(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SendDataButton(modifier: Modifier = Modifier, message: String, painter: Painter){
+fun SendDataButton(modifier: Modifier = Modifier, dataType: Int, value: Int, painter: Painter, contentDescription: String){
     Box(
         modifier = modifier
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = {
-                        onButtonPressed(message)
+                        onButtonPressed(dataType, value)
                         val released = try {
                             tryAwaitRelease()
                         } catch (c: CancellationException){
                             false
                         }
                         if (released){
-                            onButtonReleased()
+                            onButtonReleased(dataType, value)
                         }
                         else{
-                            onButtonReleased()
+                            onButtonReleased(dataType, value)
                         }
                     }
                 )
@@ -109,7 +110,7 @@ fun SendDataButton(modifier: Modifier = Modifier, message: String, painter: Pain
     ) {
         Icon(
             painter = painter,
-            contentDescription = message,
+            contentDescription = contentDescription,
             modifier = Modifier
                 .size(75.dp)
                 .background(MaterialTheme.colorScheme.primaryContainer),

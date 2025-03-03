@@ -10,7 +10,7 @@ import java.net.DatagramSocket
 import java.net.InetAddress
 
 var isRunning = true
-var lastMessage = "STOP"
+var messageArray: Array<Int> = arrayOf(0, 0, 0, 0)
 
 const val ip_address = "192.168.178.145"
 const val port = 5000
@@ -18,22 +18,34 @@ const val port = 5000
 fun startSendingCommands(){
     GlobalScope.launch {
         while (isRunning){
-            sendCommand(lastMessage)
+            sendCommand(arrayToString(messageArray))
+
             delay(100)
         }
     }
 }
 
-fun onButtonPressed(message: String){
-    lastMessage = message
-    isRunning = true
-    startSendingCommands()
+fun onButtonPressed(dataType: Int, value: Int){
+    messageArray[dataType] = value
 }
 
-fun onButtonReleased(){
-    lastMessage = "STOP"
-    isRunning = false
-    sendCommand(lastMessage)
+fun onButtonReleased(dataType: Int, valueToCompare: Int){
+    if (messageArray[dataType] == valueToCompare){
+        messageArray[dataType] = 0
+    }
+}
+
+fun arrayToString(array: Array<Int>): String{
+    var outputString = ""
+
+    for (item in array){
+        outputString += item
+        outputString += ","
+    }
+
+    outputString = outputString.removeRange(outputString.length - 1, outputString.length)
+
+    return outputString
 }
 
 fun sendCommand(message: String){
