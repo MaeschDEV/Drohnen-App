@@ -86,7 +86,7 @@ fun ControlPage(modifier: Modifier = Modifier) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.75f)
+                    .fillMaxHeight(0.85f)
             ) {
                 Row(modifier = Modifier.weight(1f)) {
                     SendDataButton(modifier = Modifier.fillMaxHeight().weight(1f), 0, 1, painterResource(R.drawable.ic_arrow_upward), "Up")

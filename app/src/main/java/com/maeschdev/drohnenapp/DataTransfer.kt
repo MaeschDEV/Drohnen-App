@@ -11,6 +11,7 @@ import java.net.InetAddress
 
 var isRunning = true
 var messageArray: Array<Int> = arrayOf(0, 0, 0, 0)
+var sendEmptyMessage = false
 
 const val ip_address = "192.168.178.145"
 const val port = 5000
@@ -18,7 +19,20 @@ const val port = 5000
 fun startSendingCommands(){
     GlobalScope.launch {
         while (isRunning){
-            sendCommand(arrayToString(messageArray))
+            var isEmpty = true
+
+            for (item in messageArray){
+                if (item != 0){
+                    sendCommand(arrayToString(messageArray))
+                    isEmpty = false
+                    sendEmptyMessage = false
+                }
+            }
+
+            if (isEmpty && !sendEmptyMessage){
+                sendCommand(arrayToString(messageArray))
+                sendEmptyMessage = true
+            }
 
             delay(100)
         }
