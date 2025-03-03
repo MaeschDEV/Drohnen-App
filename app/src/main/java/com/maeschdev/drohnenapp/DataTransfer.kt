@@ -2,7 +2,6 @@ package com.maeschdev.drohnenapp
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.net.DatagramPacket
@@ -13,25 +12,17 @@ var isRunning = true
 var messageArray: Array<Int> = arrayOf(0, 0, 0, 0)
 var sendEmptyMessage = false
 
-const val ip_address = "192.168.178.145"
-const val port = 5000
+var IP_ADDRESS = "192.168.178.145"
+var PORT = "5000"
 
 fun startSendingCommands(){
-    GlobalScope.launch {
+    CoroutineScope(Dispatchers.IO).launch {
         while (isRunning){
-            var isEmpty = true
+            val message = arrayToString(messageArray)
 
-            for (item in messageArray){
-                if (item != 0){
-                    sendCommand(arrayToString(messageArray))
-                    isEmpty = false
-                    sendEmptyMessage = false
-                }
-            }
-
-            if (isEmpty && !sendEmptyMessage){
-                sendCommand(arrayToString(messageArray))
-                sendEmptyMessage = true
+            if (messageArray.any { it != 0 } || !sendEmptyMessage) {
+                sendCommand(message)
+                sendEmptyMessage = messageArray.all { it == 0 }
             }
 
             delay(100)
@@ -49,33 +40,22 @@ fun onButtonReleased(dataType: Int, valueToCompare: Int){
     }
 }
 
-fun arrayToString(array: Array<Int>): String{
-    var outputString = ""
-
-    for (item in array){
-        outputString += item
-        outputString += ","
-    }
-
-    outputString = outputString.removeRange(outputString.length - 1, outputString.length)
-
-    return outputString
-}
+fun arrayToString(array: Array<Int>): String = array.joinToString(",")
 
 fun sendCommand(message: String){
+    println("Ip Adresse: $IP_ADDRESS; Port: $PORT")
     println("Send: $message")
-    sendData(message, ip_address, port)
+    sendData(message, IP_ADDRESS, PORT.toInt())
 }
+
+private val socket = DatagramSocket()
 
 fun sendData(message: String, ip: String, port: Int){
     CoroutineScope(Dispatchers.IO).launch {
         try {
-            val socket = DatagramSocket()
             val address = InetAddress.getByName(ip)
-            val buffer = message.toByteArray()
-            val packet = DatagramPacket(buffer, buffer.size, address, port)
+            val packet = DatagramPacket(message.toByteArray(), message.length, address, port)
             socket.send(packet)
-            socket.close()
         } catch (e: Exception){
             e.printStackTrace()
         }
