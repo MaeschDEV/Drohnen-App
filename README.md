@@ -11,18 +11,18 @@ So sieht der Startbildschirm der App aus. Das Aussehen der App variiert je nach 
 
 Die App verwendet ein Speziefisches Format zum Senden von Paketen. Dieses Format sieht wie folgt aus:
 
-(String): "0,0,0,0"
+(ByteArray): 0,0,0,0
 
-Der String ist wie folgt unterteilt:
+Das ByteArray ist wie folgt unterteilt:
 
 - Button *1*: "1,0,0,0"
 - Button *2*: "0,1,0,0"
-- Button *3*: "0,-1,0,0"
-- Button *4*: "-1,0,0,0"
+- Button *3*: "0,2,0,0"
+- Button *4*: "2,0,0,0"
 - Button *5*: "0,0,1,0"
 - Button *6*: "0,0,0,1"
-- Button *7*: "0,0,0,-1"
-- Button *8*: "0,0,-1,0"
+- Button *7*: "0,0,0,2"
+- Button *8*: "0,0,2,0"
 
 Werden zwei Buttons gedrückt, die an unterschiedlichen Stellen im String gespeichert sind, werden beide gleichzeitig gesendet. So kann z.B. folgender String übertragen werden:
 
@@ -61,7 +61,7 @@ print(f"Listening on port {UDP_PORT}...")
 
 while True:
     data, addr = sock.recvfrom(1024)
-    print(f"Received message: {data.decode()} from {addr}")
+    print(f"Received message: {data} from {addr}")
 ```
 
 ## Authors
