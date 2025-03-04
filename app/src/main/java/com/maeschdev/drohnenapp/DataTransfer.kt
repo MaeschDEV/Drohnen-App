@@ -9,20 +9,20 @@ import java.net.DatagramSocket
 import java.net.InetAddress
 
 var isRunning = true
-var messageArray: Array<Int> = arrayOf(0, 0, 0, 0)
-var sendEmptyMessage = false
+var messageByteArray = byteArrayOf(0, 0, 0, 0)
+var alreadySendEmptyMessage = false
 
 var IP_ADDRESS = "0"
 var PORT = "0"
 
+var isSending = false
+
 fun startSendingCommands(){
     CoroutineScope(Dispatchers.IO).launch {
         while (isRunning){
-            val message = arrayToString(messageArray)
-
-            if (messageArray.any { it != 0 } || !sendEmptyMessage) {
-                sendCommand(message)
-                sendEmptyMessage = messageArray.all { it == 0 }
+            if (messageByteArray.any { it != 0.toByte() } || !alreadySendEmptyMessage) {
+                sendCommand(messageByteArray)
+                alreadySendEmptyMessage = messageByteArray.all { it == 0.toByte() }
             }
 
             delay(100)
@@ -31,33 +31,34 @@ fun startSendingCommands(){
 }
 
 fun onButtonPressed(dataType: Int, value: Int){
-    messageArray[dataType] = value
+    messageByteArray[dataType] = value.toByte()
 }
 
 fun onButtonReleased(dataType: Int, valueToCompare: Int){
-    if (messageArray[dataType] == valueToCompare){
-        messageArray[dataType] = 0
+    if (messageByteArray[dataType] == valueToCompare.toByte()){
+        messageByteArray[dataType] = 0
     }
 }
 
-fun arrayToString(array: Array<Int>): String = array.joinToString(",")
-
-fun sendCommand(message: String){
-    println("Ip Adresse: $IP_ADDRESS; Port: $PORT")
-    println("Send: $message")
+fun sendCommand(message: ByteArray){
     sendData(message, IP_ADDRESS, PORT.toInt())
 }
 
 private val socket = DatagramSocket()
 
-fun sendData(message: String, ip: String, port: Int){
+fun sendData(message: ByteArray, ip: String, port: Int){
+    if (isSending) return
+
     CoroutineScope(Dispatchers.IO).launch {
         try {
+            isSending = true
             val address = InetAddress.getByName(ip)
-            val packet = DatagramPacket(message.toByteArray(), message.length, address, port)
+            val packet = DatagramPacket(message, message.size, address, port)
             socket.send(packet)
         } catch (e: Exception){
             e.printStackTrace()
+        } finally {
+            isSending = false
         }
     }
 }

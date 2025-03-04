@@ -93,7 +93,7 @@ fun ControlPage(navController: NavController) {
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Drohnen-App")
+                    Text("Drohnen App")
                 },
                 actions = {
                     IconButton(
@@ -160,7 +160,7 @@ fun ControlPage(navController: NavController) {
                                 .fillMaxHeight()
                                 .weight(0.5f),
                             1,
-                            -1,
+                            2,
                             painterResource(R.drawable.ic_rotate_right),
                             "Rotate Right"
                         )
@@ -179,7 +179,7 @@ fun ControlPage(navController: NavController) {
                                 .fillMaxHeight()
                                 .weight(0.5f),
                             3,
-                            -1,
+                            2,
                             painterResource(R.drawable.ic_keyboard_arrow_right),
                             "Right"
                         )
@@ -190,7 +190,7 @@ fun ControlPage(navController: NavController) {
                                 .fillMaxHeight()
                                 .weight(1f),
                             0,
-                            -1,
+                            2,
                             painterResource(R.drawable.ic_arrow_downward),
                             "Down"
                         )
@@ -200,7 +200,7 @@ fun ControlPage(navController: NavController) {
                                 .fillMaxHeight()
                                 .weight(1f),
                             2,
-                            -1,
+                            2,
                             painterResource(R.drawable.ic_keyboard_arrow_down),
                             "Backward"
                         )

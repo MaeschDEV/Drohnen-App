@@ -10,24 +10,24 @@ import kotlinx.coroutines.flow.map
 val Context.dataStore by preferencesDataStore(name = "ipAddress")
 
 class UserPreferences(private val context: Context) {
-    private val KEY_TEXT_1 = stringPreferencesKey("saved_text_1")
-    private val KEY_TEXT_2 = stringPreferencesKey("saved_text_2")
+    private val keyText1 = stringPreferencesKey("saved_text_1")
+    private val keyText2 = stringPreferencesKey("saved_text_2")
 
     val savedText1: Flow<String> = context.dataStore.data
-        .map { preferences -> preferences[KEY_TEXT_1] ?: "" }
+        .map { preferences -> preferences[keyText1] ?: "" }
 
     val savedText2: Flow<String> = context.dataStore.data
-        .map { preferences -> preferences[KEY_TEXT_2] ?: "" }
+        .map { preferences -> preferences[keyText2] ?: "" }
 
     suspend fun saveText1(text: String) {
         context.dataStore.edit { preferences ->
-            preferences[KEY_TEXT_1] = text
+            preferences[keyText1] = text
         }
     }
 
     suspend fun saveText2(text: String) {
         context.dataStore.edit { preferences ->
-            preferences[KEY_TEXT_2] = text
+            preferences[keyText2] = text
         }
     }
 }
