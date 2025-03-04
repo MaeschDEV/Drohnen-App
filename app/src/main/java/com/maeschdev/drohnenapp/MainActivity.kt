@@ -43,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -93,7 +94,7 @@ fun ControlPage(navController: NavController) {
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Drohnen App")
+                    Text(stringResource(R.string.app_name))
                 },
                 actions = {
                     IconButton(
@@ -299,7 +300,7 @@ fun SettingsPage(navController: NavController, viewModel: MainViewModel) {
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Einstellungen")
+                    Text(stringResource(R.string.settings))
                 },
                 navigationIcon = {
                     IconButton(
@@ -331,7 +332,7 @@ fun SettingsPage(navController: NavController, viewModel: MainViewModel) {
                         viewModel.saveText1(it)
                         IP_ADDRESS = it
                     },
-                    label = { Text("IP Adresse") },
+                    label = { Text(stringResource(R.string.ip_address)) },
                     singleLine = true
                 )
                 Spacer(modifier = Modifier.height(25.dp))
@@ -342,7 +343,7 @@ fun SettingsPage(navController: NavController, viewModel: MainViewModel) {
                         viewModel.saveText2(it)
                         PORT = it
                     },
-                    label = { Text("Port") },
+                    label = { Text(stringResource( R.string.port)) },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                     singleLine = true
                 )

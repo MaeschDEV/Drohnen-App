@@ -14,10 +14,10 @@ class UserPreferences(private val context: Context) {
     private val keyText2 = stringPreferencesKey("saved_text_2")
 
     val savedText1: Flow<String> = context.dataStore.data
-        .map { preferences -> preferences[keyText1] ?: "" }
+        .map { preferences -> preferences[keyText1] ?: "0" }
 
     val savedText2: Flow<String> = context.dataStore.data
-        .map { preferences -> preferences[keyText2] ?: "" }
+        .map { preferences -> preferences[keyText2] ?: "0" }
 
     suspend fun saveText1(text: String) {
         context.dataStore.edit { preferences ->
