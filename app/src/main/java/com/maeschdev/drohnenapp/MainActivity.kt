@@ -1,6 +1,7 @@
 package com.maeschdev.drohnenapp
 
 import android.app.Application
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -42,10 +43,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -292,6 +293,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsPage(navController: NavController, viewModel: MainViewModel) {
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
     var ipAddress by remember { mutableStateOf(viewModel.ipAddress) }
     var port by remember { mutableStateOf(viewModel.port) }
 
@@ -304,7 +308,7 @@ fun SettingsPage(navController: NavController, viewModel: MainViewModel) {
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = { navController.navigate("controlPage") }
+                        onClick = { navController.popBackStack() }
                     ) {
                         Icon(
                             Icons.AutoMirrored.Rounded.ArrowBack,
@@ -322,8 +326,11 @@ fun SettingsPage(navController: NavController, viewModel: MainViewModel) {
         ) {
             Column(
                 modifier = Modifier
-                    .padding(16.dp)
                     .verticalScroll(rememberScrollState())
+                    .then(
+                        if (isLandscape) Modifier.padding(64.dp, 16.dp, 16.dp, 16.dp)
+                        else Modifier.padding(16.dp)
+                    )
             ) {
                 TextField(
                     value = ipAddress,
@@ -349,24 +356,5 @@ fun SettingsPage(navController: NavController, viewModel: MainViewModel) {
                 )
             }
         }
-    }
-}
-
-@Preview(
-    showBackground = true,
-    device = "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape,cutout=none,navigation=gesture"
-)
-@Composable
-fun LandscapePreview() {
-    DrohnenAppTheme {
-        SettingsPage(rememberNavController(), viewModel())
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PortraitPreview() {
-    DrohnenAppTheme {
-        SettingsPage(rememberNavController(), viewModel())
     }
 }
