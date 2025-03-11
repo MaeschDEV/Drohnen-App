@@ -8,30 +8,35 @@ import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
 
-var isSendingFlightData = true
 var messageByteArray = byteArrayOf(0, 0, 0, 0, 0)
 
 var IP_ADDRESS = "0"
 var PORT = "0"
 
+var stopSignal = false
 var amountOfStopSignal = 0
 
 var isSending = false
 
 fun startSendingCommands(){
     CoroutineScope(Dispatchers.IO).launch {
-        while (isSendingFlightData) {
-            sendCommand(messageByteArray)
+        while (true) {
+            if (!stopSignal) {
+                sendCommand(messageByteArray)
+                println("Normale Daten")
 
-            amountOfStopSignal = 0
+                amountOfStopSignal = 0
+            }
+            else if (amountOfStopSignal <= 50) {
+                sendCommand(byteArrayOf(0, 0, 0, 0, 1))
+                println("Stop Daten")
 
-            delay(100)
-        }
+                amountOfStopSignal++
+            }
+            else {
+                println("Gor keine Daten lol")
+            }
 
-        while (!isSendingFlightData && amountOfStopSignal <= 50) {
-            sendCommand(byteArrayOf(0, 0, 0, 0, 1))
-
-            amountOfStopSignal++
             delay(100)
         }
     }
@@ -48,13 +53,7 @@ fun onButtonReleased(dataType: Int, valueToCompare: Int){
 }
 
 fun onToggleStopButtonPressed(stopped: Boolean) {
-    if (stopped) {
-        isSendingFlightData = true
-        startSendingCommands()
-    }
-    else {
-        isSendingFlightData = false
-    }
+    stopSignal = !stopped
 }
 
 fun sendCommand(message: ByteArray){
@@ -64,8 +63,6 @@ fun sendCommand(message: ByteArray){
 private val socket = DatagramSocket()
 
 fun sendData(message: ByteArray, ip: String, port: Int){
-    if (isSending) return
-
     CoroutineScope(Dispatchers.IO).launch {
         try {
             isSending = true
