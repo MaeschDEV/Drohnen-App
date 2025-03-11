@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -41,12 +40,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -90,6 +91,8 @@ fun AppNavigator(viewModel: MainViewModel) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ControlPage(navController: NavController) {
+    var stopped by remember { mutableStateOf(false) }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -121,92 +124,124 @@ fun ControlPage(navController: NavController) {
                     .padding(16.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.85f)
-                ) {
-                    Row(modifier = Modifier.weight(1f)) {
-                        SendDataButton(
+                Row(modifier = Modifier.weight(1f)) {
+                    SendDataButton(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(1f),
+                        0,
+                        1,
+                        painterResource(R.drawable.ic_arrow_upward),
+                        "Up",
+                        if (!stopped) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline,
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(0.25f)
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onPress = {
+                                        onToggleStopButtonPressed(stopped)
+                                        stopped = !stopped
+                                    }
+                                )
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(if (!stopped) R.drawable.ic_stop_circle else R.drawable.ic_play_circle),
+                            contentDescription = "Start / Stop",
                             modifier = Modifier
-                                .fillMaxHeight()
-                                .weight(1f),
-                            0,
-                            1,
-                            painterResource(R.drawable.ic_arrow_upward),
-                            "Up"
-                        )
-                        Spacer(modifier = Modifier.weight(0.25f))
-                        SendDataButton(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .weight(1f),
-                            2,
-                            1,
-                            painterResource(R.drawable.ic_keyboard_arrow_up),
-                            "Forward"
-                        )
-                    }
-                    Row(modifier = Modifier.weight(1f)) {
-                        SendDataButton(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .weight(0.5f),
-                            1,
-                            1,
-                            painterResource(R.drawable.ic_rotate_left),
-                            "Rotate Left"
-                        )
-                        SendDataButton(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .weight(0.5f),
-                            1,
-                            2,
-                            painterResource(R.drawable.ic_rotate_right),
-                            "Rotate Right"
-                        )
-                        Spacer(modifier = Modifier.weight(0.25f))
-                        SendDataButton(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .weight(0.5f),
-                            3,
-                            1,
-                            painterResource(R.drawable.ic_keyboard_arrow_left),
-                            "Left"
-                        )
-                        SendDataButton(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .weight(0.5f),
-                            3,
-                            2,
-                            painterResource(R.drawable.ic_keyboard_arrow_right),
-                            "Right"
+                                .size(75.dp)
+                                .background(MaterialTheme.colorScheme.errorContainer),
+                            tint = MaterialTheme.colorScheme.onErrorContainer
                         )
                     }
-                    Row(modifier = Modifier.weight(1f)) {
-                        SendDataButton(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .weight(1f),
-                            0,
-                            2,
-                            painterResource(R.drawable.ic_arrow_downward),
-                            "Down"
-                        )
-                        Spacer(modifier = Modifier.weight(0.25f))
-                        SendDataButton(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .weight(1f),
-                            2,
-                            2,
-                            painterResource(R.drawable.ic_keyboard_arrow_down),
-                            "Backward"
-                        )
-                    }
+                    SendDataButton(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(1f),
+                        2,
+                        1,
+                        painterResource(R.drawable.ic_keyboard_arrow_up),
+                        "Forward",
+                        if (!stopped) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline,
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+                Row(modifier = Modifier.weight(1f)) {
+                    SendDataButton(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(0.5f),
+                        1,
+                        1,
+                        painterResource(R.drawable.ic_rotate_left),
+                        "Rotate Left",
+                        if (!stopped) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline,
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    SendDataButton(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(0.5f),
+                        1,
+                        2,
+                        painterResource(R.drawable.ic_rotate_right),
+                        "Rotate Right",
+                        if (!stopped) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline,
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    Spacer(modifier = Modifier.weight(0.25f))
+                    SendDataButton(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(0.5f),
+                        3,
+                        1,
+                        painterResource(R.drawable.ic_keyboard_arrow_left),
+                        "Left",
+                        if (!stopped) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline,
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    SendDataButton(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(0.5f),
+                        3,
+                        2,
+                        painterResource(R.drawable.ic_keyboard_arrow_right),
+                        "Right",
+                        if (!stopped) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline,
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+                Row(modifier = Modifier.weight(1f)) {
+                    SendDataButton(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(1f),
+                        0,
+                        2,
+                        painterResource(R.drawable.ic_arrow_downward),
+                        "Down",
+                        if (!stopped) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline,
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    Spacer(modifier = Modifier.weight(0.25f))
+                    SendDataButton(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(1f),
+                        2,
+                        2,
+                        painterResource(R.drawable.ic_keyboard_arrow_down),
+                        "Backward",
+                        if (!stopped) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline,
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    )
                 }
             }
         }
@@ -214,7 +249,7 @@ fun ControlPage(navController: NavController) {
 }
 
 @Composable
-fun SendDataButton(modifier: Modifier = Modifier, dataType: Int, value: Int, painter: Painter, contentDescription: String){
+fun SendDataButton(modifier: Modifier = Modifier, dataType: Int, value: Int, painter: Painter, contentDescription: String, background: Color, foreground: Color){
     Box(
         modifier = modifier
             .pointerInput(Unit) {
@@ -242,8 +277,8 @@ fun SendDataButton(modifier: Modifier = Modifier, dataType: Int, value: Int, pai
             contentDescription = contentDescription,
             modifier = Modifier
                 .size(75.dp)
-                .background(MaterialTheme.colorScheme.primaryContainer),
-            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                .background(background),
+            tint = foreground
         )
     }
 }
@@ -356,5 +391,30 @@ fun SettingsPage(navController: NavController, viewModel: MainViewModel) {
                 )
             }
         }
+    }
+}
+
+@Preview(
+    name = "Portrait"
+)
+@Composable
+fun AppNavigatorPreview() {
+    val dummyNavController = rememberNavController()
+
+    DrohnenAppTheme {
+        ControlPage(dummyNavController)
+    }
+}
+
+@Preview(
+    name = "Landscape",
+    device = "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape,cutout=none,navigation=gesture"
+)
+@Composable
+fun AppNavigatorPreviewLS() {
+    val dummyNavController = rememberNavController()
+
+    DrohnenAppTheme {
+        ControlPage(dummyNavController)
     }
 }

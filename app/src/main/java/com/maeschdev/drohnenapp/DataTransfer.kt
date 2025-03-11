@@ -8,23 +8,30 @@ import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
 
-var isRunning = true
-var messageByteArray = byteArrayOf(0, 0, 0, 0)
-var alreadySendEmptyMessage = false
+var isSendingFlightData = true
+var messageByteArray = byteArrayOf(0, 0, 0, 0, 0)
 
 var IP_ADDRESS = "0"
 var PORT = "0"
+
+var amountOfStopSignal = 0
 
 var isSending = false
 
 fun startSendingCommands(){
     CoroutineScope(Dispatchers.IO).launch {
-        while (isRunning){
-            if (messageByteArray.any { it != 0.toByte() } || !alreadySendEmptyMessage) {
-                sendCommand(messageByteArray)
-                alreadySendEmptyMessage = messageByteArray.all { it == 0.toByte() }
-            }
+        while (isSendingFlightData) {
+            sendCommand(messageByteArray)
 
+            amountOfStopSignal = 0
+
+            delay(100)
+        }
+
+        while (!isSendingFlightData && amountOfStopSignal <= 50) {
+            sendCommand(byteArrayOf(0, 0, 0, 0, 1))
+
+            amountOfStopSignal++
             delay(100)
         }
     }
@@ -37,6 +44,16 @@ fun onButtonPressed(dataType: Int, value: Int){
 fun onButtonReleased(dataType: Int, valueToCompare: Int){
     if (messageByteArray[dataType] == valueToCompare.toByte()){
         messageByteArray[dataType] = 0
+    }
+}
+
+fun onToggleStopButtonPressed(stopped: Boolean) {
+    if (stopped) {
+        isSendingFlightData = true
+        startSendingCommands()
+    }
+    else {
+        isSendingFlightData = false
     }
 }
 
