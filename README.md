@@ -5,36 +5,39 @@ definierten Format
 
 ## App Aufbau und Funktion
 
-![Drohnen App Screenshot 1](https://github.com/user-attachments/assets/f68ecb1d-dc52-4954-959f-b8f67743dd49)
+![Drohnen App Screenshot](https://github.com/user-attachments/assets/64de2aac-b910-412f-96f3-0373bf2c0f69)
 
 So sieht der Startbildschirm der App aus. Das Aussehen der App variiert je nach Gerät. So wird z.B. das MaterialYou Theme beachtet und der Light / Dark Mode
 
 Die App verwendet ein Speziefisches Format zum Senden von Paketen. Dieses Format sieht wie folgt aus:
 
-(ByteArray): 0,0,0,0
+(ByteArray): 0,0,0,0,0
 
 Das ByteArray ist wie folgt unterteilt:
 
 - Button *1*: "1,0,0,0"
-- Button *2*: "0,1,0,0"
-- Button *3*: "0,2,0,0"
-- Button *4*: "2,0,0,0"
-- Button *5*: "0,0,1,0"
-- Button *6*: "0,0,0,1"
-- Button *7*: "0,0,0,2"
-- Button *8*: "0,0,2,0"
+- Button *3*: "0,1,0,0"
+- Button *4*: "0,2,0,0"
+- Button *5*: "2,0,0,0"
+- Button *6*: "0,0,1,0"
+- Button *7*: "0,0,0,1"
+- Button *8*: "0,0,0,2"
+- Button *9*: "0,0,2,0"
 
 Werden zwei Buttons gedrückt, die an unterschiedlichen Stellen im String gespeichert sind, werden beide gleichzeitig gesendet. So kann z.B. folgender String übertragen werden:
 
 "1,0,1,0"
 
-In diesem Fall hätte der User daher Button *1* und Button *5* gedrückt. Sollten sich wiedersprechende Buttons, wie z.B. Button *2* und *3* gleichzeitig gedrückt werden, wird der zuletzt gedrückte Button übertragen.
+In diesem Fall hätte der User daher Button *1* und Button *6* gedrückt. Sollten sich wiedersprechende Buttons, wie z.B. Button *3* und *4* gleichzeitig gedrückt werden, wird der zuletzt gedrückte Button übertragen.
 
-Ein Paket wird alle 100 ms gesendet. Wenn der Nutzer einen Knopf gedrückt hält, wird der selbe Befehl durgehend gesendet. Sollte der Nutzer jedoch keinen Button drücken, wird nur einmal "0,0,0,0" gesendet, um das Netzwerk zu schonen.
+Ein Paket wird alle 100 ms gesendet. Wenn der Nutzer einen Knopf gedrückt hält, wird der selbe Befehl durgehend gesendet.
+
+Sollte der 5. Byte auf 1 sein, bedeutet das, die Drohne soll alle Rotoren ausschalten und einen "Not-Stop" einleiten.
+Der 5. Byte wird auf 1 gesetzt, wenn Button *2* gedrückt wird. Dieser Button disabled alle Buttons. Es ist togglebar
 
 ## Ip und Port einstellen
 
-Wenn auf Button *9* gedrückt wird, öffnet sich das Einstellungsmenü:
+Wenn auf Button *10* gedrückt wird, öffnet sich das Einstellungsmenü:
 
 ![image](https://github.com/user-attachments/assets/c1eac1f5-85af-4061-ac92-2cc2e6b60092)
 
@@ -64,9 +67,12 @@ while True:
     print(f"Received message: {data} from {addr}")
 ```
 
-## Authors
+## Autor
 
 - [@MaeschDEV](https://github.com/MaeschDEV)
+
+## Special Thanks
+- [@FalkAurel](https://github.com/FalkAurel) - Ersteller der Drohne, die angesteuert wird
 
 ## License
 
