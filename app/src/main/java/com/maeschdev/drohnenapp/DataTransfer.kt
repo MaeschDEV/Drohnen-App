@@ -34,7 +34,7 @@ fun startSendingCommands(){
                 amountOfStopSignal++
             }
             else {
-                println("Gor keine Daten lol")
+                println("Keine Daten")
             }
 
             delay(100)

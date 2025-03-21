@@ -34,7 +34,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -125,7 +124,6 @@ fun ControlPage(navController: NavController) {
                     .padding(16.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-                Text("Daten werden gesendet: ")
                 Row(modifier = Modifier.weight(1f)) {
                     SendDataButton(
                         modifier = Modifier
@@ -136,7 +134,7 @@ fun ControlPage(navController: NavController) {
                         painterResource(R.drawable.ic_arrow_upward),
                         "Up",
                         if (!stopped) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline,
-                        MaterialTheme.colorScheme.onPrimaryContainer
+                        if (!stopped) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.outlineVariant
                     )
                     Box(
                         modifier = Modifier
@@ -170,7 +168,7 @@ fun ControlPage(navController: NavController) {
                         painterResource(R.drawable.ic_keyboard_arrow_up),
                         "Forward",
                         if (!stopped) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline,
-                        MaterialTheme.colorScheme.onPrimaryContainer
+                        if (!stopped) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.outlineVariant
                     )
                 }
                 Row(modifier = Modifier.weight(1f)) {
@@ -183,7 +181,7 @@ fun ControlPage(navController: NavController) {
                         painterResource(R.drawable.ic_rotate_left),
                         "Rotate Left",
                         if (!stopped) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline,
-                        MaterialTheme.colorScheme.onPrimaryContainer
+                        if (!stopped) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.outlineVariant
                     )
                     SendDataButton(
                         modifier = Modifier
@@ -194,7 +192,7 @@ fun ControlPage(navController: NavController) {
                         painterResource(R.drawable.ic_rotate_right),
                         "Rotate Right",
                         if (!stopped) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline,
-                        MaterialTheme.colorScheme.onPrimaryContainer
+                        if (!stopped) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.outlineVariant
                     )
                     Spacer(modifier = Modifier.weight(0.25f))
                     SendDataButton(
@@ -206,7 +204,7 @@ fun ControlPage(navController: NavController) {
                         painterResource(R.drawable.ic_keyboard_arrow_left),
                         "Left",
                         if (!stopped) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline,
-                        MaterialTheme.colorScheme.onPrimaryContainer
+                        if (!stopped) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.outlineVariant
                     )
                     SendDataButton(
                         modifier = Modifier
@@ -217,7 +215,7 @@ fun ControlPage(navController: NavController) {
                         painterResource(R.drawable.ic_keyboard_arrow_right),
                         "Right",
                         if (!stopped) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline,
-                        MaterialTheme.colorScheme.onPrimaryContainer
+                        if (!stopped) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.outlineVariant
                     )
                 }
                 Row(modifier = Modifier.weight(1f)) {
@@ -230,7 +228,7 @@ fun ControlPage(navController: NavController) {
                         painterResource(R.drawable.ic_arrow_downward),
                         "Down",
                         if (!stopped) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline,
-                        MaterialTheme.colorScheme.onPrimaryContainer
+                        if (!stopped) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.outlineVariant
                     )
                     Spacer(modifier = Modifier.weight(0.25f))
                     SendDataButton(
@@ -242,7 +240,7 @@ fun ControlPage(navController: NavController) {
                         painterResource(R.drawable.ic_keyboard_arrow_down),
                         "Backward",
                         if (!stopped) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline,
-                        MaterialTheme.colorScheme.onPrimaryContainer
+                        if (!stopped) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.outlineVariant
                     )
                 }
             }
@@ -296,14 +294,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         viewModelScope.launch {
-            userPreferences.savedText1.collect { loadedText ->
+            userPreferences.savedIpAddress.collect { loadedText ->
                 ipAddress = loadedText
                 IP_ADDRESS = loadedText
             }
         }
 
         viewModelScope.launch {
-            userPreferences.savedText2.collect { loadedText ->
+            userPreferences.savedPort.collect { loadedText ->
                 port = loadedText
                 PORT = loadedText
             }
@@ -314,7 +312,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         ipAddress = newText
         IP_ADDRESS = newText
         viewModelScope.launch {
-            userPreferences.saveText1(newText)
+            userPreferences.saveIpAddress(newText)
         }
     }
 
@@ -322,7 +320,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         port = newText
         PORT = newText
         viewModelScope.launch {
-            userPreferences.saveText2(newText)
+            userPreferences.savePort(newText)
         }
     }
 }
