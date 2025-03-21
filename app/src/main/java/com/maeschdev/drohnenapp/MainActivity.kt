@@ -308,7 +308,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun saveText1(newText: String){
+    fun saveIpAddress(newText: String){
         ipAddress = newText
         IP_ADDRESS = newText
         viewModelScope.launch {
@@ -316,7 +316,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun saveText2(newText: String){
+    fun savePort(newText: String){
         port = newText
         PORT = newText
         viewModelScope.launch {
@@ -371,7 +371,7 @@ fun SettingsPage(navController: NavController, viewModel: MainViewModel) {
                     value = ipAddress,
                     onValueChange = {
                         ipAddress = it
-                        viewModel.saveText1(it)
+                        viewModel.saveIpAddress(it)
                         IP_ADDRESS = it
                     },
                     label = { Text(stringResource(R.string.ip_address)) },
@@ -382,7 +382,7 @@ fun SettingsPage(navController: NavController, viewModel: MainViewModel) {
                     value = port,
                     onValueChange = {
                         port = it
-                        viewModel.saveText2(it)
+                        viewModel.savePort(it)
                         PORT = it
                     },
                     label = { Text(stringResource( R.string.port)) },
